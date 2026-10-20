@@ -83,34 +83,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
-          child: Row(
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 24, 24),
-                    child: _buildHeader(),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.background,
-                    borderRadius: BorderRadius.horizontal(
-                      left: Radius.circular(24),
-                    ),
-                  ),
-                  child: Center(
+          // Latar navy untuk panel judul (teksnya putih)
+          child: ColoredBox(
+            color: AppColors.navy,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-                      child: _buildForm(),
+                      padding: const EdgeInsets.fromLTRB(12, 12, 24, 24),
+                      child: _buildHeader(),
                     ),
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(24),
+                      ),
+                    ),
+                    child: Center(
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                        child: _buildForm(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

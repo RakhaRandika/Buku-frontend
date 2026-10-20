@@ -46,20 +46,37 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
           child: Row(
             children: [
               Container(
-                width: 240,
+                width: (MediaQuery.sizeOf(context).width * 0.35).clamp(
+                  200.0,
+                  360.0,
+                ),
                 color: AppColors.navy,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
-                  child: Column(
-                    children: [
-                      _buildTopBar(),
-                      BookCover(
-                        coverUrl: widget.book.coverUrl,
-                        width: 140,
-                        height: 205,
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
+                child: Column(
+                  children: [
+                    _buildTopBar(),
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          const ratio = 205 / 140;
+                          var height = constraints.maxHeight;
+                          var width = height / ratio;
+                          final maxWidth = constraints.maxWidth - 16;
+                          if (width > maxWidth) {
+                            width = maxWidth;
+                            height = width * ratio;
+                          }
+                          return Center(
+                            child: BookCover(
+                              coverUrl: widget.book.coverUrl,
+                              width: width,
+                              height: height,
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
