@@ -11,7 +11,6 @@ import 'book_detail_screen.dart';
 import 'favorite_screen.dart';
 import 'login_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -28,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _error;
   String _search = '';
   Timer? _debounce;
+  // Controller supaya teks pencarian tidak hilang saat layar diputar
+  final _searchController = TextEditingController();
 
   void _goTo(int index) => setState(() => _currentIndex = index);
 
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _debounce?.cancel();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -128,12 +130,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBookList() {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.navy));
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.navy),
+      );
     }
     if (_error != null) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -162,14 +166,20 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, constraints) {
         const padding = 16.0;
         const spacing = 12.0;
-        final cardWidth = (constraints.maxWidth - padding * 2 - spacing * 2) / 3;
+        // Minimal 3 kolom (portrait), bertambah saat layar lebar/landscape
+        final crossAxisCount = (constraints.maxWidth / 130).floor().clamp(3, 8);
+        final cardWidth =
+            (constraints.maxWidth -
+                padding * 2 -
+                spacing * (crossAxisCount - 1)) /
+            crossAxisCount;
 
         return RefreshIndicator(
           onRefresh: _refresh,
           child: GridView.builder(
             padding: const EdgeInsets.all(padding),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: crossAxisCount,
               crossAxisSpacing: spacing,
               mainAxisSpacing: spacing,
               mainAxisExtent: cardWidth * 1.45 + 72,
@@ -194,7 +204,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      
       canPop: _currentIndex == 0,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) _goTo(0);
@@ -233,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 64,
+          height: _isLandscape ? 52 : 64,
           child: Row(
             children: [
               _buildNavItem(
@@ -273,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(isActive ? activeIcon : icon, size: 24, color: color),
-            const SizedBox(height: 4),
+            SizedBox(height: _isLandscape ? 2 : 4),
             Text(
               label,
               style: TextStyle(
@@ -316,7 +325,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  bool get _isLandscape =>
+      MediaQuery.orientationOf(context) == Orientation.landscape;
+
   Widget _buildHeader() {
+    final logoutButton = IconButton(
+      tooltip: 'Keluar',
+      onPressed: _confirmLogout,
+      icon: const Icon(Icons.logout, color: Color(0xFFC7D2FE)),
+    );
+
+    // Landscape: sapaan dan kolom cari dalam satu baris supaya hemat tinggi
+    if (_isLandscape) {
+      return Container(
+        width: double.infinity,
+        color: AppColors.navy,
+        padding: const EdgeInsets.fromLTRB(20, 8, 8, 10),
+        child: Row(
+          children: [
+            Expanded(child: _buildGreeting()),
+            const SizedBox(width: 16),
+            Expanded(flex: 2, child: _buildSearchField()),
+            logoutButton,
+          ],
+        ),
+      );
+    }
+
     return Container(
       width: double.infinity,
       color: AppColors.navy,
@@ -324,68 +359,68 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Selamat Pembaca 👋',
-                      style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 12),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      AuthService.currentUser?.nama ?? '',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                tooltip: 'Keluar',
-                onPressed: _confirmLogout,
-                icon: const Icon(Icons.logout, color: Color(0xFFC7D2FE)),
-              ),
+              Expanded(child: _buildGreeting()),
+              logoutButton,
             ],
           ),
           const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: AppColors.navyLight,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.search, size: 18, color: Color(0xFFA5B4FC)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    onChanged: _onSearchChanged,
-                    textInputAction: TextInputAction.search,
-                    style: const TextStyle(color: Colors.white, fontSize: 13),
-                    decoration: InputDecoration(
-                      hintText: 'Cari judul buku',
-                      hintStyle: TextStyle(
-                        color: Colors.indigo[200],
-                        fontSize: 13,
-                      ),
-                      border: InputBorder.none,
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                  ),
-                ),
-              ],
+          _buildSearchField(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGreeting() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          'Selamat Pembaca 👋',
+          style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 12),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          AuthService.currentUser?.nama ?? '',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.navyLight,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search, size: 18, color: Color(0xFFA5B4FC)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: _searchController,
+              onChanged: _onSearchChanged,
+              textInputAction: TextInputAction.search,
+              style: const TextStyle(color: Colors.white, fontSize: 13),
+              decoration: InputDecoration(
+                hintText: 'Cari judul buku',
+                hintStyle: TextStyle(color: Colors.indigo[200], fontSize: 13),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
+              ),
             ),
           ),
         ],
@@ -393,4 +428,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

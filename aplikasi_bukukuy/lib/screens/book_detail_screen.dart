@@ -37,7 +37,49 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final book = widget.book;
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+
+    // Landscape: cover di panel kiri, detail di kanan supaya cover tidak
+    // menghabiskan tinggi layar
+    if (isLandscape) {
+      return Scaffold(
+        backgroundColor: AppColors.background,
+        body: Row(
+          children: [
+            Container(
+              width: 240,
+              color: AppColors.navy,
+              child: SafeArea(
+                right: false,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
+                  child: Column(
+                    children: [
+                      _buildTopBar(),
+                      BookCover(
+                        coverUrl: widget.book.coverUrl,
+                        width: 140,
+                        height: 205,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: SafeArea(
+                left: false,
+                child: ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: _buildDetails(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -52,32 +94,13 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          tooltip: _isFavorite
-                              ? 'Hapus dari favorit'
-                              : 'Tambah ke favorit',
-                          onPressed: _saving ? null : _toggleFavorite,
-                          icon: Icon(
-                            _isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: _isFavorite ? AppColors.red : Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buildTopBar(),
                     const SizedBox(height: 8),
-                    BookCover(coverUrl: book.coverUrl, width: 140, height: 205),
+                    BookCover(
+                      coverUrl: widget.book.coverUrl,
+                      width: 140,
+                      height: 205,
+                    ),
                   ],
                 ),
               ),
@@ -86,54 +109,75 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  book.judul,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.navy,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  book.penulis,
-                  style: const TextStyle(fontSize: 14, color: AppColors.orange),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    _buildInfo('Penerbit', book.penerbit),
-                    const SizedBox(width: 12),
-                    _buildInfo('Tahun terbit', book.tahunTerbit),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Deskripsi',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.navy,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  (book.deskripsi ?? '').isEmpty
-                      ? 'Belum ada deskripsi.'
-                      : book.deskripsi!,
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.6,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
+              children: _buildDetails(),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildTopBar() {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        const Spacer(),
+        IconButton(
+          tooltip: _isFavorite ? 'Hapus dari favorit' : 'Tambah ke favorit',
+          onPressed: _saving ? null : _toggleFavorite,
+          icon: Icon(
+            _isFavorite ? Icons.favorite : Icons.favorite_border,
+            color: _isFavorite ? AppColors.red : Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildDetails() {
+    final book = widget.book;
+    return [
+      Text(
+        book.judul,
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: AppColors.navy,
+        ),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        book.penulis,
+        style: const TextStyle(fontSize: 14, color: AppColors.orange),
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          _buildInfo('Penerbit', book.penerbit),
+          const SizedBox(width: 12),
+          _buildInfo('Tahun terbit', book.tahunTerbit),
+        ],
+      ),
+      const SizedBox(height: 20),
+      const Text(
+        'Deskripsi',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: AppColors.navy,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        (book.deskripsi ?? '').isEmpty
+            ? 'Belum ada deskripsi.'
+            : book.deskripsi!,
+        style: TextStyle(fontSize: 14, height: 1.6, color: Colors.grey[800]),
+      ),
+    ];
   }
 
   Widget _buildInfo(String label, String? value) {

@@ -148,10 +148,15 @@ class _SearchScreenState extends State<SearchScreen> {
                       style: const TextStyle(color: Colors.white, fontSize: 13),
                       decoration: InputDecoration(
                         hintText: 'Cari judul atau penulis...',
-                        hintStyle: TextStyle(color: Colors.indigo[200], fontSize: 13),
+                        hintStyle: TextStyle(
+                          color: Colors.indigo[200],
+                          fontSize: 13,
+                        ),
                         border: InputBorder.none,
                         isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -166,13 +171,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildBody() {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.navy));
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.navy),
+      );
     }
 
     if (!_hasSearched) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -197,12 +204,17 @@ class _SearchScreenState extends State<SearchScreen> {
       builder: (context, constraints) {
         const padding = 16.0;
         const spacing = 12.0;
-        final cardWidth = (constraints.maxWidth - padding * 2 - spacing * 2) / 3;
+        final crossAxisCount = (constraints.maxWidth / 130).floor().clamp(3, 8);
+        final cardWidth =
+            (constraints.maxWidth -
+                padding * 2 -
+                spacing * (crossAxisCount - 1)) /
+            crossAxisCount;
 
         return GridView.builder(
           padding: const EdgeInsets.all(padding),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: crossAxisCount,
             crossAxisSpacing: spacing,
             mainAxisSpacing: spacing,
             mainAxisExtent: cardWidth * 1.45 + 72,
