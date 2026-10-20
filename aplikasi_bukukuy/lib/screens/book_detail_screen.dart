@@ -39,19 +39,15 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   Widget build(BuildContext context) {
     final isLandscape =
         MediaQuery.orientationOf(context) == Orientation.landscape;
-
-    // Landscape: cover di panel kiri, detail di kanan supaya cover tidak
-    // menghabiskan tinggi layar
     if (isLandscape) {
       return Scaffold(
         backgroundColor: AppColors.background,
-        body: Row(
-          children: [
-            Container(
-              width: 240,
-              color: AppColors.navy,
-              child: SafeArea(
-                right: false,
+        body: SafeArea(
+          child: Row(
+            children: [
+              Container(
+                width: 240,
+                color: AppColors.navy,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
                   child: Column(
@@ -66,30 +62,26 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: SafeArea(
-                left: false,
+              Expanded(
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: _buildDetails(),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            color: AppColors.navy,
-            child: SafeArea(
-              bottom: false,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              color: AppColors.navy,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
                 child: Column(
@@ -105,14 +97,14 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: _buildDetails(),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(20),
+                children: _buildDetails(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

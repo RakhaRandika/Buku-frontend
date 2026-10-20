@@ -81,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Landscape: panel judul di kiri, form di kanan supaya tidak sempit
     if (isLandscape) {
       return Scaffold(
-        backgroundColor: AppColors.navy,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: Row(
             children: [
@@ -191,7 +191,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 6),
               const Text(
-                'Simpan buku favorit dan riwayat bacamu sendiri',
+                'Simpan buku favorit bacamu sendiri',
                 style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 13),
               ),
             ],

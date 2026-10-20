@@ -24,63 +24,63 @@ class FavoriteScreen extends StatelessWidget {
         MediaQuery.orientationOf(context) == Orientation.landscape;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1A4D),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: isLandscape
-                  ? const EdgeInsets.fromLTRB(12, 8, 24, 12)
-                  : const EdgeInsets.fromLTRB(12, 16, 24, 32),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(width: 8),
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              color: AppColors.navy,
+              child: Padding(
+                padding: isLandscape
+                    ? const EdgeInsets.fromLTRB(12, 8, 24, 12)
+                    : const EdgeInsets.fromLTRB(12, 16, 24, 32),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 8),
 
-                  // Teks Judul
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Buku Favorit',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                    // Teks Judul
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Buku Favorit',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '${favorites.length} buku tersimpan',
-                          style: const TextStyle(
-                            color: Color(0xFFC7D2FE), // Warna biru pudar
-                            fontSize: 14,
+                          const SizedBox(height: 6),
+                          Text(
+                            '${favorites.length} buku tersimpan',
+                            style: const TextStyle(
+                              color: Color(0xFFC7D2FE), // Warna biru pudar
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
 
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              color: const Color(0xFFFAF8F3), 
-              child: SafeArea(
-                top: false,
-                bottom: false,
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                color: const Color(0xFFFAF8F3),
                 child: favorites.isEmpty ? _buildEmpty() : _buildList(),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

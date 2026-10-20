@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Landscape: panel judul di kiri, form di kanan supaya tidak sempit
     if (isLandscape) {
       return Scaffold(
-        backgroundColor: AppColors.navy,
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: Row(
             children: [
