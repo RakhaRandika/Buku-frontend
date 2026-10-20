@@ -42,11 +42,23 @@ class BookCover extends StatelessWidget {
   Widget _buildPlaceholder() {
     return Container(
       color: AppColors.navyLight,
-      alignment: Alignment.center,
-      child: Icon(
-        Icons.menu_book_rounded,
-        size: width * 0.35,
-        color: const Color(0xFFA5B4FC),
+      // Spacer – Widget – Spacer (vertikal & horizontal): ikon di tengah cover
+      child: Column(
+        children: [
+          const Spacer(),
+          Row(
+            children: [
+              const Spacer(),
+              Icon(
+                Icons.menu_book_rounded,
+                size: width * 0.35,
+                color: const Color(0xFFA5B4FC),
+              ),
+              const Spacer(),
+            ],
+          ),
+          const Spacer(),
+        ],
       ),
     );
   }

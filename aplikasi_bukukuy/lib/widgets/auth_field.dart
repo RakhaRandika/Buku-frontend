@@ -33,16 +33,21 @@ class AuthField extends StatelessWidget {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: Colors.grey,
-            letterSpacing: 0.5,
-          ),
+        // Widget – Spacer: label rata kiri
+        Row(
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const Spacer(),
+          ],
         ),
         const SizedBox(height: 6),
         TextField(

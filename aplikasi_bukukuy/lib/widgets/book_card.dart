@@ -28,8 +28,6 @@ class BookCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
             Stack(
               children: [
@@ -43,24 +41,43 @@ class BookCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              book.judul,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppColors.navy,
-                height: 1.25,
-              ),
+            // Row + Expanded: teks rata kiri
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    book.judul,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.navy,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 2),
-            Text(
-              book.penulis,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 11, color: Color(0xFF9E9E9E)),
+            // Row + Expanded: teks rata kiri
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    book.penulis,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Color(0xFF9E9E9E),
+                    ),
+                  ),
+                ),
+              ],
             ),
+            // Spacer di bawah: judul & penulis tetap menempel di atas kartu
+            const Spacer(),
           ],
         ),
       ),

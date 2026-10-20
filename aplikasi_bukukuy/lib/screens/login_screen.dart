@@ -74,11 +74,17 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-                      child: _buildHeader(),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+                    // Spacer – Widget – Spacer: header di tengah secara vertikal
+                    child: _buildScrollable(
+                      Column(
+                        children: [
+                          const Spacer(),
+                          _buildHeader(),
+                          const Spacer(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -90,12 +96,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         left: Radius.circular(24),
                       ),
                     ),
-                    child: Center(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-                        child: _buildForm(),
-                      ),
-                    ),
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                    child: _buildScrollable(_buildForm()),
                   ),
                 ),
               ],
@@ -128,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       top: Radius.circular(24),
                     ),
                   ),
-                  child: SingleChildScrollView(child: _buildForm()),
+                  child: _buildScrollable(_buildForm()),
                 ),
               ),
             ),
@@ -140,8 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildHeader() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Widget – Spacer: logo rata kiri
         Row(
           children: [
             Container(
@@ -162,47 +164,73 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontSize: 18,
               ),
             ),
+            const Spacer(),
           ],
         ),
         const SizedBox(height: 32),
-        RichText(
-          text: const TextSpan(
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
-            ),
-            children: [
-              TextSpan(
-                text: 'Selamat ',
-                style: TextStyle(color: Colors.white),
-              ),
-              TextSpan(
-                text: 'datang',
+        // Widget – Spacer: judul rata kiri
+        Row(
+          children: [
+            Text.rich(
+              const TextSpan(
                 style: TextStyle(
-                  color: Color(0xFFFDBA74),
-                  fontStyle: FontStyle.italic,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
                 ),
+                children: [
+                  TextSpan(
+                    text: 'Selamat ',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  TextSpan(
+                    text: 'datang',
+                    style: TextStyle(
+                      color: Color(0xFFFDBA74),
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '\nkembali.',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
-              TextSpan(
-                text: '\nkembali.',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
+            ),
+            const Spacer(),
+          ],
         ),
         const SizedBox(height: 6),
-        const Text(
-          'Masuk untuk melanjutkan perjalanan membacamu',
-          style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 13),
+        // Row + Expanded: teks panjang rata kiri & boleh turun baris
+        Row(
+          children: [
+            Expanded(
+              child: const Text(
+                'Masuk untuk melanjutkan perjalanan membacamu',
+                style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 13),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
+  // Form tetap bisa di-scroll (misal saat keyboard muncul), tapi kalau ruangnya
+  // cukup tingginya dipaksa penuh supaya Spacer di dalam form bisa bekerja
+  Widget _buildScrollable(Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: IntrinsicHeight(child: child),
+        ),
+      ),
+    );
+  }
+
   Widget _buildForm() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AuthField(
           label: 'EMAIL',
@@ -232,38 +260,50 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 28),
 
-        ElevatedButton(
-          onPressed: _loading ? null : _login,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.navy,
-            foregroundColor: Colors.white,
-            disabledBackgroundColor: AppColors.navy.withValues(alpha: 0.6),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: _loading
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                )
-              : const Text(
-                  'Masuk',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-                ),
-        ),
-
-        const SizedBox(height: 16),
-        // Wrap supaya pindah baris kalau lebarnya tidak cukup
-        Wrap(
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        // Row + Expanded: tombol selebar form
+        Row(
           children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _loading ? null : _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.navy,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: AppColors.navy.withValues(
+                    alpha: 0.6,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: _loading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Masuk',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Spacer mendorong ajakan di bawah ini ke dasar layar
+        const Spacer(),
+        // Spacer – Widget – Spacer: ajakan daftar/masuk di tengah
+        Row(
+          children: [
+            const Spacer(),
             Text(
               'Belum punya akun?',
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
@@ -283,6 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+            const Spacer(),
           ],
         ),
       ],

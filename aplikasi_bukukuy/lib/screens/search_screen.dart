@@ -169,67 +169,140 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  Widget _buildCentered(Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: IntrinsicHeight(
+            child: Column(
+              children: [
+                const Spacer(),
+                Row(
+                  children: [
+                    const Spacer(),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: constraints.maxWidth - 64,
+                      ),
+                      child: child,
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+                const Spacer(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody() {
     if (_loading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.navy),
+      return _buildCentered(
+        const CircularProgressIndicator(color: AppColors.navy),
       );
     }
 
     if (!_hasSearched) {
-      return Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.search, size: 64, color: Color(0xFFD1D5DB)),
-              const SizedBox(height: 16),
-              Text(
-                'Ketik judul buku atau nama penulis',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
-              ),
-            ],
-          ),
+      return _buildCentered(
+        Column(
+          children: [
+            // Spacer – Widget – Spacer: ikon di tengah
+            const Row(
+              children: [
+                Spacer(),
+                Icon(Icons.search, size: 64, color: Color(0xFFD1D5DB)),
+                Spacer(),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Ketik judul buku atau nama penulis',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey[600], fontSize: 14),
+            ),
+          ],
         ),
       );
     }
 
     if (_results.isEmpty) {
-      return const Center(child: Text('Buku tidak ditemukan'));
+      return _buildCentered(const Text('Buku tidak ditemukan'));
     }
 
     return LayoutBuilder(
       builder: (context, constraints) {
         const padding = 16.0;
         const spacing = 12.0;
-        final crossAxisCount = (constraints.maxWidth / 130).floor().clamp(3, 8);
+        final columns = (constraints.maxWidth / 130).floor().clamp(3, 8);
         final cardWidth =
-            (constraints.maxWidth -
-                padding * 2 -
-                spacing * (crossAxisCount - 1)) /
-            crossAxisCount;
+            (constraints.maxWidth - padding * 2 - spacing * (columns - 1)) /
+            columns;
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(padding),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: spacing,
-            mainAxisSpacing: spacing,
-            mainAxisExtent: cardWidth * 1.45 + 72,
-          ),
-          itemCount: _results.length,
-          itemBuilder: (context, index) {
-            final book = _results[index];
-            return BookCard(
-              book: book,
-              width: cardWidth,
-              isFavorite: _isFavorite(book),
-              onTap: () => _openDetail(book),
-              onFavoriteTap: () => _toggleFavorite(book),
-            );
-          },
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(padding, padding, padding, 0),
+              child: Row(
+                children: [
+                  const Text(
+                    'Hasil Pencarian',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.navy,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${_results.length} buku',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF9E9E9E),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.all(padding),
+                itemCount: (_results.length / columns).ceil(),
+                separatorBuilder: (context, row) =>
+                    const SizedBox(height: spacing),
+                itemBuilder: (context, row) {
+                  final children = <Widget>[];
+                  for (var col = 0; col < columns; col++) {
+                    // Widget – Spacer – Widget: Spacer menjadi jarak antar item
+                    if (col > 0) children.add(const Spacer());
+                    final index = row * columns + col;
+                    final book = index < _results.length
+                        ? _results[index]
+                        : null;
+                    children.add(
+                      SizedBox(
+                        width: cardWidth,
+                        height: cardWidth * 1.45 + 72,
+                        child: book == null
+                            ? null
+                            : BookCard(
+                                book: book,
+                                width: cardWidth,
+                                isFavorite: _isFavorite(book),
+                                onTap: () => _openDetail(book),
+                                onFavoriteTap: () => _toggleFavorite(book),
+                              ),
+                      ),
+                    );
+                  }
+                  return Row(children: children);
+                },
+              ),
+            ),
+          ],
         );
       },
     );

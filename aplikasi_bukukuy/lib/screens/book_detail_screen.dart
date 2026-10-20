@@ -7,7 +7,6 @@ import '../widgets/book_cover.dart';
 class BookDetailScreen extends StatefulWidget {
   final Book book;
   final bool isFavorite;
-  // Mengembalikan true kalau berhasil disimpan ke server
   final Future<bool> Function(Book book) onToggleFavorite;
 
   const BookDetailScreen({
@@ -66,12 +65,24 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                             width = maxWidth;
                             height = width * ratio;
                           }
-                          return Center(
-                            child: BookCover(
-                              coverUrl: widget.book.coverUrl,
-                              width: width,
-                              height: height,
-                            ),
+                          // Spacer – Widget – Spacer (vertikal & horizontal)
+                          // menaruh cover tepat di tengah panel
+                          return Column(
+                            children: [
+                              const Spacer(),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  BookCover(
+                                    coverUrl: widget.book.coverUrl,
+                                    width: width,
+                                    height: height,
+                                  ),
+                                  const Spacer(),
+                                ],
+                              ),
+                              const Spacer(),
+                            ],
                           );
                         },
                       ),
@@ -105,10 +116,17 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                   children: [
                     _buildTopBar(),
                     const SizedBox(height: 8),
-                    BookCover(
-                      coverUrl: widget.book.coverUrl,
-                      width: 140,
-                      height: 205,
+                    // Spacer – Widget – Spacer: cover di tengah
+                    Row(
+                      children: [
+                        const Spacer(),
+                        BookCover(
+                          coverUrl: widget.book.coverUrl,
+                          width: 140,
+                          height: 205,
+                        ),
+                        const Spacer(),
+                      ],
                     ),
                   ],
                 ),
@@ -199,20 +217,35 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
           border: Border.all(color: AppColors.border),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: const TextStyle(fontSize: 11, color: Color(0xFF9E9E9E)),
+
+            Row(
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Color(0xFF9E9E9E),
+                  ),
+                ),
+                const Spacer(),
+              ],
             ),
             const SizedBox(height: 4),
-            Text(
-              (value ?? '').isEmpty ? '-' : value!,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppColors.navy,
-              ),
+
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    (value ?? '').isEmpty ? '-' : value!,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.navy,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

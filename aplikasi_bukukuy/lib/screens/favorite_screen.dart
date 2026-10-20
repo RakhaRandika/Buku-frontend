@@ -28,7 +28,6 @@ class FavoriteScreen extends StatelessWidget {
       body: SafeArea(
         bottom: false,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               width: double.infinity,
@@ -37,35 +36,37 @@ class FavoriteScreen extends StatelessWidget {
                 padding: isLandscape
                     ? const EdgeInsets.fromLTRB(12, 8, 24, 12)
                     : const EdgeInsets.fromLTRB(12, 16, 24, 32),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
                   children: [
-                    const SizedBox(width: 8),
-
-                    // Teks Judul
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Buku Favorit',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    // Widget – Spacer: judul rata kiri
+                    Row(
+                      children: [
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Buku Favorit',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(height: 6),
-                          Text(
-                            '${favorites.length} buku tersimpan',
-                            style: const TextStyle(
-                              color: Color(0xFFC7D2FE), // Warna biru pudar
-                              fontSize: 14,
-                            ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    // Widget – Spacer: jumlah buku rata kiri
+                    Row(
+                      children: [
+                        const SizedBox(width: 8),
+                        Text(
+                          '${favorites.length} buku tersimpan',
+                          style: const TextStyle(
+                            color: Color(0xFFC7D2FE), // Warna biru pudar
+                            fontSize: 14,
                           ),
-                        ],
-                      ),
+                        ),
+                        const Spacer(),
+                      ],
                     ),
                   ],
                 ),
@@ -88,17 +89,37 @@ class FavoriteScreen extends StatelessWidget {
   Widget _buildList() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final crossAxisCount = constraints.maxWidth >= 600 ? 2 : 1;
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            mainAxisExtent: 92,
-          ),
-          itemCount: favorites.length,
-          itemBuilder: (context, index) => _buildItem(favorites[index]),
+        const padding = 16.0;
+        const spacing = 12.0;
+        final columns = constraints.maxWidth >= 600 ? 2 : 1;
+        final itemWidth =
+            (constraints.maxWidth - padding * 2 - spacing * (columns - 1)) /
+            columns;
+        // Tinggi kartu ikut membesar kalau ukuran huruf HP diperbesar
+        final itemHeight = MediaQuery.textScalerOf(context).scale(92);
+        return ListView.separated(
+          padding: const EdgeInsets.all(padding),
+          itemCount: (favorites.length / columns).ceil(),
+          separatorBuilder: (context, row) => const SizedBox(height: spacing),
+          // Tiap baris: Row [item, Spacer, item, Spacer, item]
+          itemBuilder: (context, row) {
+            final children = <Widget>[];
+            for (var col = 0; col < columns; col++) {
+              // Widget – Spacer – Widget: Spacer menjadi jarak antar item
+              if (col > 0) children.add(const Spacer());
+              final index = row * columns + col;
+              final book = index < favorites.length ? favorites[index] : null;
+              children.add(
+                SizedBox(
+                  width: itemWidth,
+                  height: itemHeight,
+                  // Baris terakhir yang belum penuh diisi kotak kosong
+                  child: book == null ? null : _buildItem(book),
+                ),
+              );
+            }
+            return Row(children: children);
+          },
         );
       },
     );
@@ -124,30 +145,45 @@ class FavoriteScreen extends StatelessWidget {
               borderRadius: 8,
             ),
             const SizedBox(width: 12),
+            // Expanded mengisi ruang tengah sehingga tombol hapus terdorong ke kanan
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    book.judul,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.navy,
-                    ),
+                  // Spacer atas & bawah menengahkan teks di kartu
+                  const Spacer(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          book.judul,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.navy,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    book.penulis,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF9E9E9E),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          book.penulis,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF9E9E9E),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  const Spacer(),
                 ],
               ),
             ),
@@ -168,39 +204,43 @@ class FavoriteScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.favorite,
-                size: 80,
-                color: Color(0xFFD4C4E9), // Warna ungu muda pudar
-              ),
-              const SizedBox(height: 24),
-
-              const Text(
-                'Belum ada favorit',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+          // Spacer – Widget – Spacer: isi berada di tengah layar
+          child: IntrinsicHeight(
+            child: Column(
+              children: [
+                const Spacer(),
+                const Icon(
+                  Icons.favorite,
+                  size: 80,
+                  color: Color(0xFFD4C4E9), // Warna ungu muda pudar
                 ),
-              ),
-              const SizedBox(height: 12),
+                const SizedBox(height: 24),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 48),
-                child: Text(
-                  'Tekan ikon hati pada buku yang kamu suka untuk menyimpannya di sini',
-                  textAlign: TextAlign.center,
+                const Text(
+                  'Belum ada favorit',
                   style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                    height: 1.5,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 48),
+                  child: Text(
+                    'Tekan ikon hati pada buku yang kamu suka untuk menyimpannya di sini',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
           ),
         ),
       ),

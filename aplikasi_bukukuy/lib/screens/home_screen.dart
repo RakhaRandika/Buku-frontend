@@ -128,38 +128,81 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Pengganti Center: Spacer – Widget – Spacer (vertikal dengan Column,
+  // horizontal dengan Row). Tetap bisa di-scroll kalau layarnya pendek.
+  Widget _buildCentered(Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: IntrinsicHeight(
+            child: Column(
+              children: [
+                const Spacer(),
+                Row(
+                  children: [
+                    const Spacer(),
+                    // Batasi lebar supaya teks panjang turun baris
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: constraints.maxWidth - 64,
+                      ),
+                      child: child,
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+                const Spacer(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBookList() {
     if (_loading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.navy),
+      return _buildCentered(
+        const CircularProgressIndicator(color: AppColors.navy),
       );
     }
     if (_error != null) {
-      return Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.wifi_off, size: 48, color: Color(0xFF9E9E9E)),
-              const SizedBox(height: 12),
-              Text(_error!, textAlign: TextAlign.center),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: _refresh,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.navy,
-                  foregroundColor: Colors.white,
+      return _buildCentered(
+        Column(
+          children: [
+            // Spacer – Widget – Spacer: ikon di tengah
+            const Row(
+              children: [
+                Spacer(),
+                Icon(Icons.wifi_off, size: 48, color: Color(0xFF9E9E9E)),
+                Spacer(),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(_error!, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            // Spacer – Widget – Spacer: tombol di tengah
+            Row(
+              children: [
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: _refresh,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.navy,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Coba lagi'),
                 ),
-                child: const Text('Coba lagi'),
-              ),
-            ],
-          ),
+                const Spacer(),
+              ],
+            ),
+          ],
         ),
       );
     }
     if (_books.isEmpty) {
-      return const Center(child: Text('Buku tidak ditemukan'));
+      return _buildCentered(const Text('Buku tidak ditemukan'));
     }
 
     return LayoutBuilder(
@@ -167,33 +210,43 @@ class _HomeScreenState extends State<HomeScreen> {
         const padding = 16.0;
         const spacing = 12.0;
         // Minimal 3 kolom (portrait), bertambah saat layar lebar/landscape
-        final crossAxisCount = (constraints.maxWidth / 130).floor().clamp(3, 8);
+        final columns = (constraints.maxWidth / 130).floor().clamp(3, 8);
         final cardWidth =
-            (constraints.maxWidth -
-                padding * 2 -
-                spacing * (crossAxisCount - 1)) /
-            crossAxisCount;
+            (constraints.maxWidth - padding * 2 - spacing * (columns - 1)) /
+            columns;
 
         return RefreshIndicator(
           onRefresh: _refresh,
-          child: GridView.builder(
+          child: ListView.separated(
             padding: const EdgeInsets.all(padding),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: spacing,
-              mainAxisExtent: cardWidth * 1.45 + 72,
-            ),
-            itemCount: _books.length,
-            itemBuilder: (context, index) {
-              final book = _books[index];
-              return BookCard(
-                book: book,
-                width: cardWidth,
-                isFavorite: _isFavorite(book),
-                onTap: () => _openDetail(book),
-                onFavoriteTap: () => _toggleFavorite(book),
-              );
+            itemCount: (_books.length / columns).ceil(),
+            separatorBuilder: (context, row) => const SizedBox(height: spacing),
+            // Tiap baris: Row [item, Spacer, item, Spacer, item]
+            itemBuilder: (context, row) {
+              final children = <Widget>[];
+              for (var col = 0; col < columns; col++) {
+                // Widget – Spacer – Widget: Spacer menjadi jarak antar item
+                if (col > 0) children.add(const Spacer());
+                final index = row * columns + col;
+                final book = index < _books.length ? _books[index] : null;
+                children.add(
+                  SizedBox(
+                    width: cardWidth,
+                    height: cardWidth * 1.45 + 72,
+                    // Baris terakhir yang belum penuh diisi kotak kosong
+                    child: book == null
+                        ? null
+                        : BookCard(
+                            book: book,
+                            width: cardWidth,
+                            isFavorite: _isFavorite(book),
+                            onTap: () => _openDetail(book),
+                            onFavoriteTap: () => _toggleFavorite(book),
+                          ),
+                  ),
+                );
+              }
+              return Row(children: children);
             },
           ),
         );
@@ -279,8 +332,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: InkWell(
         onTap: onTap,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Spacer(),
             Icon(isActive ? activeIcon : icon, size: 24, color: color),
             SizedBox(height: _isLandscape ? 2 : 4),
             Text(
@@ -291,6 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: color,
               ),
             ),
+            const Spacer(),
           ],
         ),
       ),
@@ -357,12 +411,18 @@ class _HomeScreenState extends State<HomeScreen> {
       color: AppColors.navy,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Widget – Spacer – Widget: sapaan di kiri, tombol keluar di kanan
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: _buildGreeting()),
+              // Batasi lebar supaya nama panjang terpotong "…"
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.sizeOf(context).width * 0.65,
+                ),
+                child: _buildGreeting(),
+              ),
+              const Spacer(),
               logoutButton,
             ],
           ),
@@ -373,27 +433,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Sapaan + nama dalam satu Text.rich dua baris, otomatis rata kiri
   Widget _buildGreeting() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Selamat Pembaca 👋',
-          style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 12),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          AuthService.currentUser?.nama ?? '',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 19,
-            fontWeight: FontWeight.bold,
+    return Text.rich(
+      TextSpan(
+        children: [
+          const TextSpan(
+            text: 'Selamat Pembaca 👋\n',
+            style: TextStyle(
+              color: Color(0xFFC7D2FE),
+              fontSize: 12,
+              height: 1.8,
+            ),
           ),
-        ),
-      ],
+          TextSpan(
+            text: AuthService.currentUser?.nama ?? '',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 19,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 

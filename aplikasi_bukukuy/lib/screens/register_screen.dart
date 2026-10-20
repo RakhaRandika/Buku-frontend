@@ -78,22 +78,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final isLandscape =
         MediaQuery.orientationOf(context) == Orientation.landscape;
 
-    // Landscape: panel judul di kiri, form di kanan supaya tidak sempit
     if (isLandscape) {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
-          // Latar navy untuk panel judul (teksnya putih)
           child: ColoredBox(
             color: AppColors.navy,
             child: Row(
               children: [
                 Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(12, 12, 24, 24),
-                      child: _buildHeader(),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 12, 24, 24),
+                    // Spacer – Widget – Spacer: header di tengah secara vertikal
+                    child: _buildScrollable(
+                      Column(
+                        children: [
+                          const Spacer(),
+                          _buildHeader(),
+                          const Spacer(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -105,12 +109,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         left: Radius.circular(24),
                       ),
                     ),
-                    child: Center(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-                        child: _buildForm(),
-                      ),
-                    ),
+                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                    child: _buildScrollable(_buildForm()),
                   ),
                 ),
               ],
@@ -143,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       top: Radius.circular(24),
                     ),
                   ),
-                  child: SingleChildScrollView(child: _buildForm()),
+                  child: _buildScrollable(_buildForm()),
                 ),
               ),
             ),
@@ -155,53 +155,99 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildHeader() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+        // Widget – Spacer – Widget: tombol kembali di kiri, logo di kanan
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            const Spacer(),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Image.asset('assets/logo_1024.png'),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'bukukuy',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.only(left: 12),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    height: 1.2,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: 'Buat ',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    TextSpan(
-                      text: 'akun',
+              // Widget – Spacer: judul rata kiri
+              Row(
+                children: [
+                  Text.rich(
+                    const TextSpan(
                       style: TextStyle(
-                        color: Color(0xFFFDBA74),
-                        fontStyle: FontStyle.italic,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
                       ),
+                      children: [
+                        TextSpan(
+                          text: 'Buat ',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: 'akun',
+                          style: TextStyle(
+                            color: Color(0xFFFDBA74),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '\nbaru.',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
                     ),
-                    TextSpan(
-                      text: '\nbaru.',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
+                  ),
+                  const Spacer(),
+                ],
               ),
               const SizedBox(height: 6),
-              const Text(
-                'Simpan buku favorit bacamu sendiri',
-                style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 13),
+              // Row + Expanded: teks panjang rata kiri & boleh turun baris
+              Row(
+                children: [
+                  Expanded(
+                    child: const Text(
+                      'Simpan buku favorit bacamu sendiri',
+                      style: TextStyle(color: Color(0xFFC7D2FE), fontSize: 13),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildScrollable(Widget child) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: IntrinsicHeight(child: child),
+        ),
+      ),
     );
   }
 
@@ -218,7 +264,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AuthField(
           label: 'NAMA',
@@ -255,37 +300,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         const SizedBox(height: 28),
 
-        ElevatedButton(
-          onPressed: _loading ? null : _register,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.navy,
-            foregroundColor: Colors.white,
-            disabledBackgroundColor: AppColors.navy.withValues(alpha: 0.6),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: _loading
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
+        // Row + Expanded: tombol selebar form
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _loading ? null : _register,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.navy,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: AppColors.navy.withValues(
+                    alpha: 0.6,
                   ),
-                )
-              : const Text(
-                  'Daftar',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
+                child: _loading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Daftar',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
-        // Wrap supaya pindah baris kalau lebarnya tidak cukup
-        Wrap(
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        const Spacer(),
+        Row(
           children: [
+            const Spacer(),
             Text(
               'Sudah punya akun?',
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
@@ -301,6 +357,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
+            const Spacer(),
           ],
         ),
       ],
