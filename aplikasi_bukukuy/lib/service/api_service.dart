@@ -16,13 +16,10 @@ class ApiException implements Exception {
 class ApiService {
   static final Random _random = Random();
 
-  // "Tabel" buku dummy di memori
   static final List<Book> _books = List.of(dummyBooks);
 
-  // "Tabel" favorit dummy -> cuma simpan id buku yang difavoritkan
   static final Set<int> _favoriteIds = {};
 
-  // Delay kecil biar terasa seperti manggil API beneran (loading spinner dsb kelihatan)
   static Future<void> _delay() =>
       Future.delayed(const Duration(milliseconds: 500));
 

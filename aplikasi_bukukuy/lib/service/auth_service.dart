@@ -8,7 +8,6 @@ class AuthService {
 
   static String? token;
   static User? currentUser;
-
   static bool get isLoggedIn => token != null && currentUser != null;
 
   static Future<void> login(String email, String password) async {
