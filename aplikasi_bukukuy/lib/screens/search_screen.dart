@@ -107,7 +107,13 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: [
             _buildSearchBar(),
-            Expanded(child: _buildBody()),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                color: AppColors.background,
+                child: _buildBody(),
+              ),
+            ),
           ],
         ),
       ),
@@ -272,7 +278,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemBuilder: (context, row) {
                   final children = <Widget>[];
                   for (var col = 0; col < columns; col++) {
-
                     if (col > 0) children.add(const Spacer());
                     final index = row * columns + col;
                     final book = index < _results.length

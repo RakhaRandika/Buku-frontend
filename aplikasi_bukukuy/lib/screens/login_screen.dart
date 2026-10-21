@@ -67,13 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
-          // Latar navy untuk panel judul (teksnya putih)
-          child: ColoredBox(
+          child: Container(
             color: AppColors.navy,
             child: Row(
               children: [
                 Expanded(
-                  child: Padding(
+                  child: Container(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
                     child: _buildScrollable(
                       Column(
@@ -197,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
         const SizedBox(height: 6),
-        // Row + Expanded: teks panjang rata kiri & boleh turun baris
+
         Row(
           children: [
             Expanded(
@@ -211,7 +210,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
     );
   }
-
 
   Widget _buildScrollable(Widget child) {
     return LayoutBuilder(

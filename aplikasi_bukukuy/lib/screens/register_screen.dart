@@ -52,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       await AuthService.register(nama, email, password);
       if (!mounted) return;
-      // Hapus layar login & daftar dari tumpukan supaya back tidak kembali ke sana
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
         (_) => false,
@@ -82,12 +82,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
-          child: ColoredBox(
+          child: Container(
             color: AppColors.navy,
             child: Row(
               children: [
                 Expanded(
-                  child: Padding(
+                  child: Container(
                     padding: const EdgeInsets.fromLTRB(12, 12, 24, 24),
                     // Spacer – Widget – Spacer: header di tengah secara vertikal
                     child: _buildScrollable(

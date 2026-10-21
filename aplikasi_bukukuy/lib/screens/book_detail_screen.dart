@@ -90,9 +90,12 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(20),
-                  children: _buildDetails(),
+                child: Container(
+                  color: AppColors.background,
+                  child: ListView(
+                    padding: const EdgeInsets.all(20),
+                    children: _buildDetails(),
+                  ),
                 ),
               ),
             ],
@@ -131,9 +134,12 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
               ),
             ),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(20),
-                children: _buildDetails(),
+              child: Container(
+                color: AppColors.background,
+                child: ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: _buildDetails(),
+                ),
               ),
             ),
           ],
@@ -216,7 +222,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         ),
         child: Column(
           children: [
-
             Row(
               children: [
                 Text(

@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Book> _books = [];
   List<Book> _favorites = [];
   bool _loading = true;
-  String? _error;
   String _search = '';
   Timer? _debounce;
  
@@ -48,33 +47,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadBooks() async {
     final search = _search;
+    setState(() => _loading = true);
+    final books = await ApiService.getBooks(search: search);
+    if (!mounted || search != _search) return;
     setState(() {
-      _loading = true;
-      _error = null;
+      _books = books;
+      _loading = false;
     });
-    try {
-      final books = await ApiService.getBooks(search: search);
-      if (!mounted || search != _search) return;
-      setState(() {
-        _books = books;
-        _loading = false;
-      });
-    } catch (e) {
-      if (!mounted || search != _search) return;
-      setState(() {
-        _error = e.toString();
-        _loading = false;
-      });
-    }
   }
 
   Future<void> _loadFavorites() async {
-    try {
-      final favorites = await ApiService.getFavorites();
-      if (!mounted) return;
-      setState(() => _favorites = favorites);
-    } catch (_) {
-    }
+    final favorites = await ApiService.getFavorites();
+    if (!mounted) return;
+    setState(() => _favorites = favorites);
   }
 
   Future<void> _refresh() => Future.wait([_loadBooks(), _loadFavorites()]);
@@ -91,26 +76,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<bool> _toggleFavorite(Book book) async {
     final wasFavorite = _isFavorite(book);
-    try {
-      if (wasFavorite) {
-        await ApiService.hapusFavorite(book.idBuku);
-      } else {
-        await ApiService.tambahFavorite(book.idBuku);
-      }
-      if (!mounted) return true;
-      setState(() {
-        _favorites = wasFavorite
-            ? _favorites.where((f) => f.idBuku != book.idBuku).toList()
-            : [book, ..._favorites];
-      });
-      return true;
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      }
-      return false;
+    if (wasFavorite) {
+      await ApiService.hapusFavorite(book.idBuku);
+    } else {
+      await ApiService.tambahFavorite(book.idBuku);
     }
+    if (!mounted) return true;
+    setState(() {
+      _favorites = wasFavorite
+          ? _favorites.where((f) => f.idBuku != book.idBuku).toList()
+          : [book, ..._favorites];
+    });
+    return true;
   }
 
   void _openDetail(Book book) {
@@ -160,38 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_loading) {
       return _buildCentered(
         const CircularProgressIndicator(color: AppColors.navy),
-      );
-    }
-    if (_error != null) {
-      return _buildCentered(
-        Column(
-          children: [
-            const Row(
-              children: [
-                Spacer(),
-                Icon(Icons.wifi_off, size: 48, color: Color(0xFF9E9E9E)),
-                Spacer(),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(_error!, textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: _refresh,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.navy,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Coba lagi'),
-                ),
-                const Spacer(),
-              ],
-            ),
-          ],
-        ),
       );
     }
     if (_books.isEmpty) {
@@ -258,7 +203,13 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   _buildHeader(),
-                  Expanded(child: _buildBookList()),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      color: AppColors.background,
+                      child: _buildBookList(),
+                    ),
+                  ),
                 ],
               ),
             ),
