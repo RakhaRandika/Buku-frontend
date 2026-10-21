@@ -82,6 +82,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
+          left: false,
+          right: false,
           child: Container(
             color: AppColors.navy,
             child: Row(
@@ -89,14 +91,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(12, 12, 24, 24),
-                    // Spacer – Widget – Spacer: header di tengah secara vertikal
-                    child: _buildScrollable(
-                      Column(
-                        children: [
-                          const Spacer(),
-                          _buildHeader(),
-                          const Spacer(),
-                        ],
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      right: false,
+                      child: _buildScrollable(
+                        Column(
+                          children: [
+                            const Spacer(),
+                            _buildHeader(),
+                            const Spacer(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -110,7 +116,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-                    child: _buildScrollable(_buildForm()),
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      left: false,
+                      child: _buildScrollable(_buildForm()),
+                    ),
                   ),
                 ),
               ],
@@ -188,7 +199,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.only(left: 12),
           child: Column(
             children: [
-              // Widget – Spacer: judul rata kiri
               Row(
                 children: [
                   Text.rich(

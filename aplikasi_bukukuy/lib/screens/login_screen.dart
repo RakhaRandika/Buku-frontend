@@ -67,6 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
+          left: false,
+          right: false,
           child: Container(
             color: AppColors.navy,
             child: Row(
@@ -74,13 +76,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-                    child: _buildScrollable(
-                      Column(
-                        children: [
-                          const Spacer(),
-                          _buildHeader(),
-                          const Spacer(),
-                        ],
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      right: false,
+                      child: _buildScrollable(
+                        Column(
+                          children: [
+                            const Spacer(),
+                            _buildHeader(),
+                            const Spacer(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -94,7 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-                    child: _buildScrollable(_buildForm()),
+                    child: SafeArea(
+                      top: false,
+                      bottom: false,
+                      left: false,
+                      child: _buildScrollable(_buildForm()),
+                    ),
                   ),
                 ),
               ],

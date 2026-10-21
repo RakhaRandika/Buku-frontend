@@ -42,6 +42,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
+          left: false,
+          right: false,
           child: Row(
             children: [
               Container(
@@ -51,50 +53,60 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 ),
                 color: AppColors.navy,
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
-                child: Column(
-                  children: [
-                    _buildTopBar(),
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          const ratio = 205 / 140;
-                          var height = constraints.maxHeight;
-                          var width = height / ratio;
-                          final maxWidth = constraints.maxWidth - 16;
-                          if (width > maxWidth) {
-                            width = maxWidth;
-                            height = width * ratio;
-                          }
+                child: SafeArea(
+                  top: false,
+                  bottom: false,
+                  right: false,
+                  child: Column(
+                    children: [
+                      _buildTopBar(),
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            const ratio = 205 / 140;
+                            var height = constraints.maxHeight;
+                            var width = height / ratio;
+                            final maxWidth = constraints.maxWidth - 16;
+                            if (width > maxWidth) {
+                              width = maxWidth;
+                              height = width * ratio;
+                            }
 
-                          return Column(
-                            children: [
-                              const Spacer(),
-                              Row(
-                                children: [
-                                  const Spacer(),
-                                  BookCover(
-                                    coverUrl: widget.book.coverUrl,
-                                    width: width,
-                                    height: height,
-                                  ),
-                                  const Spacer(),
-                                ],
-                              ),
-                              const Spacer(),
-                            ],
-                          );
-                        },
+                            return Column(
+                              children: [
+                                const Spacer(),
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    BookCover(
+                                      coverUrl: widget.book.coverUrl,
+                                      width: width,
+                                      height: height,
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                ),
+                                const Spacer(),
+                              ],
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Expanded(
                 child: Container(
                   color: AppColors.background,
-                  child: ListView(
-                    padding: const EdgeInsets.all(20),
-                    children: _buildDetails(),
+                  child: SafeArea(
+                    top: false,
+                    bottom: false,
+                    left: false,
+                    child: ListView(
+                      padding: const EdgeInsets.all(20),
+                      children: _buildDetails(),
+                    ),
                   ),
                 ),
               ),

@@ -26,49 +26,54 @@ class FavoriteScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
+        left: false,
+        right: false,
         bottom: false,
         child: Column(
           children: [
             Container(
               width: double.infinity,
               color: AppColors.navy,
-              child: Padding(
-                padding: isLandscape
-                    ? const EdgeInsets.fromLTRB(12, 8, 24, 12)
-                    : const EdgeInsets.fromLTRB(12, 16, 24, 32),
-                child: Column(
-                  children: [
-
-                    Row(
-                      children: [
-                        const SizedBox(width: 8),
-                        const Text(
-                          'Buku Favorit',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: Padding(
+                  padding: isLandscape
+                      ? const EdgeInsets.fromLTRB(12, 8, 24, 12)
+                      : const EdgeInsets.fromLTRB(12, 16, 24, 32),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Buku Favorit',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
+                          const Spacer(),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
 
-                    Row(
-                      children: [
-                        const SizedBox(width: 8),
-                        Text(
-                          '${favorites.length} buku tersimpan',
-                          style: const TextStyle(
-                            color: Color(0xFFC7D2FE), 
-                            fontSize: 14,
+                      Row(
+                        children: [
+                          const SizedBox(width: 8),
+                          Text(
+                            '${favorites.length} buku tersimpan',
+                            style: const TextStyle(
+                              color: Color(0xFFC7D2FE),
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                      ],
-                    ),
-                  ],
+                          const Spacer(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -77,7 +82,11 @@ class FavoriteScreen extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 color: const Color(0xFFFAF8F3),
-                child: favorites.isEmpty ? _buildEmpty() : _buildList(),
+                child: SafeArea(
+                  top: false,
+                  bottom: false,
+                  child: favorites.isEmpty ? _buildEmpty() : _buildList(),
+                ),
               ),
             ),
           ],
@@ -203,11 +212,7 @@ class FavoriteScreen extends StatelessWidget {
             child: Column(
               children: [
                 const Spacer(),
-                const Icon(
-                  Icons.favorite,
-                  size: 80,
-                  color: Color(0xFFD4C4E9),
-                ),
+                const Icon(Icons.favorite, size: 80, color: Color(0xFFD4C4E9)),
                 const SizedBox(height: 24),
 
                 const Text(

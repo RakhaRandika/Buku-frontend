@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _loading = true;
   String _search = '';
   Timer? _debounce;
- 
+
   final _searchController = TextEditingController();
 
   void _goTo(int index) => setState(() => _currentIndex = index);
@@ -114,7 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   children: [
                     const Spacer(),
-                    // Batasi lebar supaya teks panjang turun baris
                     ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: constraints.maxWidth - 64,
@@ -200,6 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
           index: _currentIndex,
           children: [
             SafeArea(
+              left: false,
+              right: false,
               child: Column(
                 children: [
                   _buildHeader(),
@@ -207,7 +208,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       width: double.infinity,
                       color: AppColors.background,
-                      child: _buildBookList(),
+                      child: SafeArea(
+                        top: false,
+                        bottom: false,
+                        child: _buildBookList(),
+                      ),
                     ),
                   ),
                 ],
@@ -334,13 +339,17 @@ class _HomeScreenState extends State<HomeScreen> {
         width: double.infinity,
         color: AppColors.navy,
         padding: const EdgeInsets.fromLTRB(20, 8, 8, 10),
-        child: Row(
-          children: [
-            Expanded(child: _buildGreeting()),
-            const SizedBox(width: 16),
-            Expanded(flex: 2, child: _buildSearchField()),
-            logoutButton,
-          ],
+        child: SafeArea(
+          top: false,
+          bottom: false,
+          child: Row(
+            children: [
+              Expanded(child: _buildGreeting()),
+              const SizedBox(width: 16),
+              Expanded(flex: 2, child: _buildSearchField()),
+              logoutButton,
+            ],
+          ),
         ),
       );
     }
@@ -349,23 +358,27 @@ class _HomeScreenState extends State<HomeScreen> {
       width: double.infinity,
       color: AppColors.navy,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.65,
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.sizeOf(context).width * 0.65,
+                  ),
+                  child: _buildGreeting(),
                 ),
-                child: _buildGreeting(),
-              ),
-              const Spacer(),
-              logoutButton,
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildSearchField(),
-        ],
+                const Spacer(),
+                logoutButton,
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildSearchField(),
+          ],
+        ),
       ),
     );
   }

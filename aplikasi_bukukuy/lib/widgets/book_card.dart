@@ -41,7 +41,6 @@ class BookCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            // Row + Expanded: teks rata kiri
             Row(
               children: [
                 Expanded(

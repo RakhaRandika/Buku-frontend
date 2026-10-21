@@ -104,6 +104,8 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
+        left: false,
+        right: false,
         child: Column(
           children: [
             _buildSearchBar(),
@@ -111,7 +113,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Container(
                 width: double.infinity,
                 color: AppColors.background,
-                child: _buildBody(),
+                child: SafeArea(top: false, bottom: false, child: _buildBody()),
               ),
             ),
           ],
@@ -125,49 +127,60 @@ class _SearchScreenState extends State<SearchScreen> {
       width: double.infinity,
       color: AppColors.navy,
       padding: const EdgeInsets.fromLTRB(12, 8, 20, 20),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: AppColors.navyLight,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.search, size: 18, color: Color(0xFFA5B4FC)),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      autofocus: true,
-                      onChanged: _onChanged,
-                      textInputAction: TextInputAction.search,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
-                      decoration: InputDecoration(
-                        hintText: 'Cari judul atau penulis...',
-                        hintStyle: TextStyle(
-                          color: Colors.indigo[200],
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: AppColors.navyLight,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.search,
+                      size: 18,
+                      color: Color(0xFFA5B4FC),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        autofocus: true,
+                        onChanged: _onChanged,
+                        textInputAction: TextInputAction.search,
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontSize: 13,
                         ),
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 14,
+                        decoration: InputDecoration(
+                          hintText: 'Cari judul atau penulis...',
+                          hintStyle: TextStyle(
+                            color: Colors.indigo[200],
+                            fontSize: 13,
+                          ),
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
