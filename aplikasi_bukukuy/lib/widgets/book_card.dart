@@ -29,56 +29,60 @@ class BookCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: Column(
           children: [
-            Stack(
-              children: [
-                BookCover(
-                  coverUrl: book.coverUrl,
-                  width: width,
-                  height: width * 1.45,
-                ),
-                if (onFavoriteTap != null)
-                  Positioned(top: 6, right: 6, child: _buildFavoriteButton()),
-              ],
-            ),
+            _buildCover(),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    book.judul,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.navy,
-                      height: 1.25,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _buildTitle(),
             const SizedBox(height: 2),
-
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    book.penulis,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFF9E9E9E),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            _buildAuthor(),
             const Spacer(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCover() {
+    return Stack(
+      children: [
+        BookCover(coverUrl: book.coverUrl, width: width, height: width * 1.45),
+        if (onFavoriteTap != null)
+          Positioned(top: 6, right: 6, child: _buildFavoriteButton()),
+      ],
+    );
+  }
+
+  Widget _buildTitle() {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            book.judul,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.navy,
+              height: 1.25,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAuthor() {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            book.penulis,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 11, color: Color(0xFF9E9E9E)),
+          ),
+        ),
+      ],
     );
   }
 

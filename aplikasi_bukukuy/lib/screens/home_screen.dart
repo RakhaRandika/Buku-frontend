@@ -157,33 +157,38 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(padding),
             itemCount: (_books.length / columns).ceil(),
             separatorBuilder: (context, row) => const SizedBox(height: spacing),
-            itemBuilder: (context, row) {
-              final children = <Widget>[];
-              for (var col = 0; col < columns; col++) {
-                if (col > 0) children.add(const Spacer());
-                final index = row * columns + col;
-                final book = index < _books.length ? _books[index] : null;
-                children.add(
-                  SizedBox(
-                    width: cardWidth,
-                    height: cardWidth * 1.45 + 72,
-                    child: book == null
-                        ? null
-                        : BookCard(
-                            book: book,
-                            width: cardWidth,
-                            isFavorite: _isFavorite(book),
-                            onTap: () => _openDetail(book),
-                            onFavoriteTap: () => _toggleFavorite(book),
-                          ),
-                  ),
-                );
-              }
-              return Row(children: children);
-            },
+            itemBuilder: (context, row) =>
+                _buildBookRow(row, columns, cardWidth),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildBookRow(int row, int columns, double cardWidth) {
+    final children = <Widget>[];
+    for (var col = 0; col < columns; col++) {
+      if (col > 0) children.add(const Spacer());
+      final index = row * columns + col;
+      final book = index < _books.length ? _books[index] : null;
+      children.add(
+        SizedBox(
+          width: cardWidth,
+          height: cardWidth * 1.45 + 72,
+          child: book == null ? null : _buildBookCard(book, cardWidth),
+        ),
+      );
+    }
+    return Row(children: children);
+  }
+
+  Widget _buildBookCard(Book book, double cardWidth) {
+    return BookCard(
+      book: book,
+      width: cardWidth,
+      isFavorite: _isFavorite(book),
+      onTap: () => _openDetail(book),
+      onFavoriteTap: () => _toggleFavorite(book),
     );
   }
 
@@ -198,26 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: IndexedStack(
           index: _currentIndex,
           children: [
-            SafeArea(
-              left: false,
-              right: false,
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      color: AppColors.background,
-                      child: SafeArea(
-                        top: false,
-                        bottom: false,
-                        child: _buildBookList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildHomePage(),
             FavoriteScreen(
               onBack: () => _goTo(0),
               favorites: _favorites,
@@ -227,6 +213,29 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         bottomNavigationBar: _buildBottomNavbar(),
+      ),
+    );
+  }
+
+  Widget _buildHomePage() {
+    return SafeArea(
+      left: false,
+      right: false,
+      child: Column(
+        children: [
+          _buildHeader(),
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              color: AppColors.background,
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: _buildBookList(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
