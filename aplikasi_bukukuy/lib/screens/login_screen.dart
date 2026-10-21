@@ -63,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final isLandscape =
         MediaQuery.orientationOf(context) == Orientation.landscape;
 
-    // Landscape: panel judul di kiri, form di kanan supaya tidak sempit
     if (isLandscape) {
       return Scaffold(
         backgroundColor: AppColors.background,
@@ -76,7 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
-                    // Spacer – Widget – Spacer: header di tengah secara vertikal
                     child: _buildScrollable(
                       Column(
                         children: [
@@ -143,7 +141,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildHeader() {
     return Column(
       children: [
-        // Widget – Spacer: logo rata kiri
         Row(
           children: [
             Container(
@@ -168,7 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
         const SizedBox(height: 32),
-        // Widget – Spacer: judul rata kiri
         Row(
           children: [
             Text.rich(
@@ -216,8 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Form tetap bisa di-scroll (misal saat keyboard muncul), tapi kalau ruangnya
-  // cukup tingginya dipaksa penuh supaya Spacer di dalam form bisa bekerja
+
   Widget _buildScrollable(Widget child) {
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
@@ -260,7 +255,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 28),
 
-        // Row + Expanded: tombol selebar form
         Row(
           children: [
             Expanded(
@@ -298,9 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        // Spacer mendorong ajakan di bawah ini ke dasar layar
         const Spacer(),
-        // Spacer – Widget – Spacer: ajakan daftar/masuk di tengah
         Row(
           children: [
             const Spacer(),

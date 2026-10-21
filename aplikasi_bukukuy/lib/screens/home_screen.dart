@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _error;
   String _search = '';
   Timer? _debounce;
-  // Controller supaya teks pencarian tidak hilang saat layar diputar
+ 
   final _searchController = TextEditingController();
 
   void _goTo(int index) => setState(() => _currentIndex = index);
@@ -54,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     try {
       final books = await ApiService.getBooks(search: search);
-      // Abaikan hasil pencarian lama kalau kata kuncinya sudah berubah
       if (!mounted || search != _search) return;
       setState(() {
         _books = books;
@@ -75,7 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       setState(() => _favorites = favorites);
     } catch (_) {
-      // Error koneksi sudah ditampilkan oleh _loadBooks
     }
   }
 
@@ -91,7 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _isFavorite(Book book) => _favorites.any((f) => f.idBuku == book.idBuku);
 
-  // true = berhasil disimpan ke server
   Future<bool> _toggleFavorite(Book book) async {
     final wasFavorite = _isFavorite(book);
     try {
@@ -128,8 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Pengganti Center: Spacer – Widget – Spacer (vertikal dengan Column,
-  // horizontal dengan Row). Tetap bisa di-scroll kalau layarnya pendek.
   Widget _buildCentered(Widget child) {
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
@@ -171,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return _buildCentered(
         Column(
           children: [
-            // Spacer – Widget – Spacer: ikon di tengah
             const Row(
               children: [
                 Spacer(),
@@ -182,7 +176,6 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 12),
             Text(_error!, textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            // Spacer – Widget – Spacer: tombol di tengah
             Row(
               children: [
                 const Spacer(),
@@ -209,7 +202,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, constraints) {
         const padding = 16.0;
         const spacing = 12.0;
-        // Minimal 3 kolom (portrait), bertambah saat layar lebar/landscape
         final columns = (constraints.maxWidth / 130).floor().clamp(3, 8);
         final cardWidth =
             (constraints.maxWidth - padding * 2 - spacing * (columns - 1)) /
@@ -221,11 +213,9 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(padding),
             itemCount: (_books.length / columns).ceil(),
             separatorBuilder: (context, row) => const SizedBox(height: spacing),
-            // Tiap baris: Row [item, Spacer, item, Spacer, item]
             itemBuilder: (context, row) {
               final children = <Widget>[];
               for (var col = 0; col < columns; col++) {
-                // Widget – Spacer – Widget: Spacer menjadi jarak antar item
                 if (col > 0) children.add(const Spacer());
                 final index = row * columns + col;
                 final book = index < _books.length ? _books[index] : null;
@@ -233,7 +223,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: cardWidth,
                     height: cardWidth * 1.45 + 72,
-                    // Baris terakhir yang belum penuh diisi kotak kosong
                     child: book == null
                         ? null
                         : BookCard(
@@ -389,7 +378,6 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: const Icon(Icons.logout, color: Color(0xFFC7D2FE)),
     );
 
-    // Landscape: sapaan dan kolom cari dalam satu baris supaya hemat tinggi
     if (_isLandscape) {
       return Container(
         width: double.infinity,
@@ -412,10 +400,8 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       child: Column(
         children: [
-          // Widget – Spacer – Widget: sapaan di kiri, tombol keluar di kanan
           Row(
             children: [
-              // Batasi lebar supaya nama panjang terpotong "…"
               ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: MediaQuery.sizeOf(context).width * 0.65,
@@ -433,7 +419,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Sapaan + nama dalam satu Text.rich dua baris, otomatis rata kiri
   Widget _buildGreeting() {
     return Text.rich(
       TextSpan(

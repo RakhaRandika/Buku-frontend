@@ -6,7 +6,6 @@ import 'service/auth_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Kalau sudah pernah login, langsung masuk ke Beranda
   await AuthService.restoreSession();
   runApp(const BukukuyApp());
 }
@@ -27,6 +26,18 @@ class BukukuyApp extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 class AppColors {
   static const navy = Color(0xFF1E1A4D);

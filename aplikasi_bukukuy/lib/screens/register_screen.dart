@@ -156,7 +156,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildHeader() {
     return Column(
       children: [
-        // Widget – Spacer – Widget: tombol kembali di kiri, logo di kanan
         Row(
           children: [
             IconButton(
@@ -222,7 +221,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ),
               const SizedBox(height: 6),
-              // Row + Expanded: teks panjang rata kiri & boleh turun baris
+
               Row(
                 children: [
                   Expanded(
@@ -300,7 +299,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         const SizedBox(height: 28),
 
-        // Row + Expanded: tombol selebar form
         Row(
           children: [
             Expanded(

@@ -38,7 +38,7 @@ class FavoriteScreen extends StatelessWidget {
                     : const EdgeInsets.fromLTRB(12, 16, 24, 32),
                 child: Column(
                   children: [
-                    // Widget – Spacer: judul rata kiri
+
                     Row(
                       children: [
                         const SizedBox(width: 8),
@@ -54,14 +54,14 @@ class FavoriteScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 6),
-                    // Widget – Spacer: jumlah buku rata kiri
+
                     Row(
                       children: [
                         const SizedBox(width: 8),
                         Text(
                           '${favorites.length} buku tersimpan',
                           style: const TextStyle(
-                            color: Color(0xFFC7D2FE), // Warna biru pudar
+                            color: Color(0xFFC7D2FE), 
                             fontSize: 14,
                           ),
                         ),
@@ -95,17 +95,15 @@ class FavoriteScreen extends StatelessWidget {
         final itemWidth =
             (constraints.maxWidth - padding * 2 - spacing * (columns - 1)) /
             columns;
-        // Tinggi kartu ikut membesar kalau ukuran huruf HP diperbesar
+
         final itemHeight = MediaQuery.textScalerOf(context).scale(92);
         return ListView.separated(
           padding: const EdgeInsets.all(padding),
           itemCount: (favorites.length / columns).ceil(),
           separatorBuilder: (context, row) => const SizedBox(height: spacing),
-          // Tiap baris: Row [item, Spacer, item, Spacer, item]
           itemBuilder: (context, row) {
             final children = <Widget>[];
             for (var col = 0; col < columns; col++) {
-              // Widget – Spacer – Widget: Spacer menjadi jarak antar item
               if (col > 0) children.add(const Spacer());
               final index = row * columns + col;
               final book = index < favorites.length ? favorites[index] : null;
@@ -113,7 +111,6 @@ class FavoriteScreen extends StatelessWidget {
                 SizedBox(
                   width: itemWidth,
                   height: itemHeight,
-                  // Baris terakhir yang belum penuh diisi kotak kosong
                   child: book == null ? null : _buildItem(book),
                 ),
               );
@@ -145,11 +142,10 @@ class FavoriteScreen extends StatelessWidget {
               borderRadius: 8,
             ),
             const SizedBox(width: 12),
-            // Expanded mengisi ruang tengah sehingga tombol hapus terdorong ke kanan
+
             Expanded(
               child: Column(
                 children: [
-                  // Spacer atas & bawah menengahkan teks di kartu
                   const Spacer(),
                   Row(
                     children: [
@@ -198,13 +194,11 @@ class FavoriteScreen extends StatelessWidget {
   }
 
   Widget _buildEmpty() {
-    // Bisa di-scroll supaya tidak overflow saat tinggi layar kecil (landscape)
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
-          // Spacer – Widget – Spacer: isi berada di tengah layar
           child: IntrinsicHeight(
             child: Column(
               children: [
@@ -212,7 +206,7 @@ class FavoriteScreen extends StatelessWidget {
                 const Icon(
                   Icons.favorite,
                   size: 80,
-                  color: Color(0xFFD4C4E9), // Warna ungu muda pudar
+                  color: Color(0xFFD4C4E9),
                 ),
                 const SizedBox(height: 24),
 

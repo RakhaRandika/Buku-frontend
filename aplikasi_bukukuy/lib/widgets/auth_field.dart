@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../main.dart';
 
-// Label kecil + kolom input, dipakai di layar login dan daftar
 class AuthField extends StatelessWidget {
   final String label;
   final String hint;
@@ -34,7 +33,6 @@ class AuthField extends StatelessWidget {
 
     return Column(
       children: [
-        // Widget – Spacer: label rata kiri
         Row(
           children: [
             Text(

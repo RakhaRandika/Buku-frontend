@@ -13,17 +13,6 @@ class ApiException implements Exception {
   String toString() => message;
 }
 
-// =======================================================================
-// VERSI DUMMY — tidak ada koneksi internet / backend sama sekali.
-// Semua "database" cuma List/Set yang hidup di memori selama app berjalan
-// (hilang kalau app di-restart).
-//
-// Nama method & bentuk data yang dikembalikan SENGAJA dibuat identik
-// dengan versi asli (yang manggil http ke backend Express+Supabase),
-// supaya layar lain (login_screen, home_screen, dll) tidak perlu
-// diubah sama sekali. Nanti kalau backend asli sudah siap, tinggal
-// timpa isi file ini dengan versi yang pakai http lagi.
-// =======================================================================
 class ApiService {
   static final Random _random = Random();
 
@@ -37,10 +26,9 @@ class ApiService {
   static Future<void> _delay() =>
       Future.delayed(const Duration(milliseconds: 500));
 
-  // ---------------- AUTH ----------------
+ 
 
-  // Dummy: email & password apa saja (asal tidak kosong, sudah dicek di
-  // login_screen) selalu dianggap berhasil login.
+
   static Future<Map<String, dynamic>> login(
     String email,
     String password,
@@ -67,11 +55,10 @@ class ApiService {
 
   static Future<User> me(String token) async {
     await _delay();
-    // Dummy: token apa saja dianggap valid, selalu kembalikan user yang sama
     return User(idUser: 1, nama: 'Pembaca Bukukuy', email: 'demo@bukukuy.app');
   }
 
-  // ---------------- BUKU ----------------
+
 
   static Future<List<Book>> getBooks({String? search}) async {
     await _delay();
@@ -88,7 +75,7 @@ class ApiService {
         .toList();
   }
 
-  // ---------------- FAVORIT ----------------
+
 
   static Future<List<Book>> getFavorites() async {
     await _delay();

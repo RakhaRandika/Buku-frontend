@@ -8,9 +8,6 @@ import '../service/api_service.dart';
 import '../widgets/book_card.dart';
 import 'book_detail_screen.dart';
 
-// Halaman cari buku full-screen (terpisah dari search bar kecil di Home).
-// Belum dipasang di navigasi manapun — tinggal panggil lewat:
-//   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SearchScreen()));
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -210,7 +207,6 @@ class _SearchScreenState extends State<SearchScreen> {
       return _buildCentered(
         Column(
           children: [
-            // Spacer – Widget – Spacer: ikon di tengah
             const Row(
               children: [
                 Spacer(),
@@ -276,7 +272,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemBuilder: (context, row) {
                   final children = <Widget>[];
                   for (var col = 0; col < columns; col++) {
-                    // Widget – Spacer – Widget: Spacer menjadi jarak antar item
+
                     if (col > 0) children.add(const Spacer());
                     final index = row * columns + col;
                     final book = index < _results.length

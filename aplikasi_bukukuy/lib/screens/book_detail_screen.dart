@@ -65,8 +65,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                             width = maxWidth;
                             height = width * ratio;
                           }
-                          // Spacer – Widget – Spacer (vertikal & horizontal)
-                          // menaruh cover tepat di tengah panel
+
                           return Column(
                             children: [
                               const Spacer(),
@@ -116,7 +115,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                   children: [
                     _buildTopBar(),
                     const SizedBox(height: 8),
-                    // Spacer – Widget – Spacer: cover di tengah
                     Row(
                       children: [
                         const Spacer(),

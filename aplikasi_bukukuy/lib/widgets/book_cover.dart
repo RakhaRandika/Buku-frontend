@@ -42,7 +42,6 @@ class BookCover extends StatelessWidget {
   Widget _buildPlaceholder() {
     return Container(
       color: AppColors.navyLight,
-      // Spacer – Widget – Spacer (vertikal & horizontal): ikon di tengah cover
       child: Column(
         children: [
           const Spacer(),

@@ -60,7 +60,7 @@ class BookCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 2),
-            // Row + Expanded: teks rata kiri
+
             Row(
               children: [
                 Expanded(
@@ -76,7 +76,6 @@ class BookCard extends StatelessWidget {
                 ),
               ],
             ),
-            // Spacer di bawah: judul & penulis tetap menempel di atas kartu
             const Spacer(),
           ],
         ),
