@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../models/book.dart';
 import '../widgets/book_cover.dart';
 
@@ -24,7 +23,7 @@ class FavoriteScreen extends StatelessWidget {
         MediaQuery.orientationOf(context) == Orientation.landscape;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Color(0xFFFAF8F3),
       body: SafeArea(
         left: false,
         right: false,
@@ -33,7 +32,7 @@ class FavoriteScreen extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              color: AppColors.navy,
+              color: Color(0xFF1E1A4D),
               child: SafeArea(
                 top: false,
                 bottom: false,
@@ -140,7 +139,7 @@ class FavoriteScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: Color(0xFFE5E5E5)),
         ),
         child: Row(
           children: [
@@ -166,7 +165,7 @@ class FavoriteScreen extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.navy,
+                            color: Color(0xFF1E1A4D),
                           ),
                         ),
                       ),
@@ -193,7 +192,7 @@ class FavoriteScreen extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.favorite, color: AppColors.red),
+              icon: const Icon(Icons.favorite, color: Color(0xFFDC2626)),
               onPressed: () => onRemove(book),
             ),
           ],

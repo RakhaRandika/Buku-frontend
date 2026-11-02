@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../models/book.dart';
 import '../widgets/book_cover.dart';
 
@@ -40,7 +39,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         MediaQuery.orientationOf(context) == Orientation.landscape;
     if (isLandscape) {
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Color(0xFFFAF8F3),
         body: SafeArea(
           left: false,
           right: false,
@@ -51,7 +50,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                   200.0,
                   360.0,
                 ),
-                color: AppColors.navy,
+                color: Color(0xFF1E1A4D),
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
                 child: SafeArea(
                   top: false,
@@ -98,7 +97,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
               ),
               Expanded(
                 child: Container(
-                  color: AppColors.background,
+                  color: Color(0xFFFAF8F3),
                   child: SafeArea(
                     top: false,
                     bottom: false,
@@ -117,13 +116,13 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Color(0xFFFAF8F3),
       body: SafeArea(
         child: Column(
           children: [
             Container(
               width: double.infinity,
-              color: AppColors.navy,
+              color: Color(0xFF1E1A4D),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
                 child: Column(
@@ -147,7 +146,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
             ),
             Expanded(
               child: Container(
-                color: AppColors.background,
+                color: Color(0xFFFAF8F3),
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: _buildDetails(),
@@ -173,7 +172,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
           onPressed: _saving ? null : _toggleFavorite,
           icon: Icon(
             _isFavorite ? Icons.favorite : Icons.favorite_border,
-            color: _isFavorite ? AppColors.red : Colors.white,
+            color: _isFavorite ? Color(0xFFDC2626) : Colors.white,
           ),
         ),
       ],
@@ -188,13 +187,13 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         style: const TextStyle(
           fontSize: 22,
           fontWeight: FontWeight.bold,
-          color: AppColors.navy,
+          color: Color(0xFF1E1A4D),
         ),
       ),
       const SizedBox(height: 4),
       Text(
         book.penulis,
-        style: const TextStyle(fontSize: 14, color: AppColors.orange),
+        style: const TextStyle(fontSize: 14, color: Color(0xFFF97316)),
       ),
       const SizedBox(height: 16),
       Row(
@@ -210,7 +209,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          color: AppColors.navy,
+          color: Color(0xFF1E1A4D),
         ),
       ),
       const SizedBox(height: 8),
@@ -230,7 +229,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: Color(0xFFE5E5E5)),
         ),
         child: Column(
           children: [
@@ -256,7 +255,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.navy,
+                      color: Color(0xFF1E1A4D),
                     ),
                   ),
                 ),

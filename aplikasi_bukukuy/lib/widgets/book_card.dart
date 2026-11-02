@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../models/book.dart';
 import 'book_cover.dart';
 
@@ -62,7 +61,7 @@ class BookCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.navy,
+              color: Color(0xFF1E1A4D),
               height: 1.25,
             ),
           ),
@@ -98,7 +97,7 @@ class BookCard extends StatelessWidget {
           child: Icon(
             isFavorite ? Icons.favorite : Icons.favorite_border,
             size: 16,
-            color: isFavorite ? AppColors.red : const Color(0xFF9E9E9E),
+            color: isFavorite ? Color(0xFFDC2626) : const Color(0xFF9E9E9E),
           ),
         ),
       ),

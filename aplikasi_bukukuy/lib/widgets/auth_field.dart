@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
-
 class AuthField extends StatelessWidget {
   final String label;
   final String hint;
@@ -28,7 +26,7 @@ class AuthField extends StatelessWidget {
   Widget build(BuildContext context) {
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.border),
+      borderSide: const BorderSide(color: Color(0xFFE5E5E5)),
     );
 
     return Column(
@@ -67,7 +65,7 @@ class AuthField extends StatelessWidget {
             border: border,
             enabledBorder: border,
             focusedBorder: border.copyWith(
-              borderSide: const BorderSide(color: AppColors.navy),
+              borderSide: const BorderSide(color: Color(0xFF1E1A4D)),
             ),
           ),
         ),

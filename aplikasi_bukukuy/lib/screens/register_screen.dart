@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../service/api_service.dart';
 import '../service/auth_service.dart';
 import '../widgets/auth_field.dart';
@@ -69,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: AppColors.red),
+        SnackBar(content: Text(message), backgroundColor: Color(0xFFDC2626)),
       );
   }
 
@@ -80,12 +79,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (isLandscape) {
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Color(0xFFFAF8F3),
         body: SafeArea(
           left: false,
           right: false,
           child: Container(
-            color: AppColors.navy,
+            color: Color(0xFF1E1A4D),
             child: Row(
               children: [
                 Expanded(
@@ -110,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
-                      color: AppColors.background,
+                      color: Color(0xFFFAF8F3),
                       borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(24),
                       ),
@@ -137,7 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             Container(
               width: double.infinity,
-              color: AppColors.navy,
+              color: Color(0xFF1E1A4D),
               padding: const EdgeInsets.fromLTRB(12, 12, 24, 56),
               child: _buildHeader(),
             ),
@@ -149,7 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
                   decoration: const BoxDecoration(
-                    color: AppColors.background,
+                    color: Color(0xFFFAF8F3),
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(24),
                     ),
@@ -178,7 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: Color(0xFFE5E5E5),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Image.asset('assets/logo_1024.png'),
@@ -315,11 +314,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: ElevatedButton(
                 onPressed: _loading ? null : _register,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.navy,
+                  backgroundColor: Color(0xFF1E1A4D),
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: AppColors.navy.withValues(
-                    alpha: 0.6,
-                  ),
+                  disabledBackgroundColor: Color(0xFF1E1A4D)
+                      .withValues(alpha: 0.6),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -359,7 +357,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: const Text(
                 'Masuk',
                 style: TextStyle(
-                  color: AppColors.orange,
+                  color: Color(0xFFF97316),
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),

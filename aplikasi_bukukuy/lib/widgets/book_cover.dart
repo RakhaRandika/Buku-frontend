@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
-
 class BookCover extends StatelessWidget {
   final String? coverUrl;
   final double width;
@@ -41,7 +39,7 @@ class BookCover extends StatelessWidget {
 
   Widget _buildPlaceholder() {
     return Container(
-      color: AppColors.navyLight,
+      color: Color(0xFF2A2560),
       child: Column(
         children: [
           const Spacer(),

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../models/book.dart';
 import '../service/api_service.dart';
 import '../widgets/book_card.dart';
@@ -102,7 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Color(0xFFFAF8F3),
       body: SafeArea(
         left: false,
         right: false,
@@ -112,7 +111,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                color: AppColors.background,
+                color: Color(0xFFFAF8F3),
                 child: SafeArea(top: false, bottom: false, child: _buildBody()),
               ),
             ),
@@ -125,7 +124,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSearchBar() {
     return Container(
       width: double.infinity,
-      color: AppColors.navy,
+      color: Color(0xFF1E1A4D),
       padding: const EdgeInsets.fromLTRB(12, 8, 20, 20),
       child: SafeArea(
         top: false,
@@ -140,7 +139,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.navyLight,
+                  color: Color(0xFF2A2560),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -218,7 +217,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildBody() {
     if (_loading) {
       return _buildCentered(
-        const CircularProgressIndicator(color: AppColors.navy),
+        const CircularProgressIndicator(color: Color(0xFF1E1A4D)),
       );
     }
 
@@ -268,7 +267,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.navy,
+                      color: Color(0xFF1E1A4D),
                     ),
                   ),
                   const Spacer(),

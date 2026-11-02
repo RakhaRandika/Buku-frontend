@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../models/book.dart';
 import '../service/api_service.dart';
 import '../service/auth_service.dart';
@@ -135,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBookList() {
     if (_loading) {
       return _buildCentered(
-        const CircularProgressIndicator(color: AppColors.navy),
+        const CircularProgressIndicator(color: Color(0xFF1E1A4D)),
       );
     }
     if (_books.isEmpty) {
@@ -227,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: Container(
               width: double.infinity,
-              color: AppColors.background,
+              color: Color(0xFFFAF8F3),
               child: SafeArea(
                 top: false,
                 bottom: false,
@@ -280,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required bool isActive,
     required VoidCallback onTap,
   }) {
-    final color = isActive ? AppColors.navy : const Color(0xFF9E9E9E);
+    final color = isActive ? Color(0xFF1E1A4D) : const Color(0xFF9E9E9E);
 
     return Expanded(
       child: InkWell(
@@ -318,7 +317,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Keluar', style: TextStyle(color: AppColors.red)),
+            child: const Text(
+              'Keluar',
+              style: TextStyle(color: Color(0xFFDC2626)),
+            ),
           ),
         ],
       ),
@@ -346,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_isLandscape) {
       return Container(
         width: double.infinity,
-        color: AppColors.navy,
+        color: Color(0xFF1E1A4D),
         padding: const EdgeInsets.fromLTRB(20, 8, 8, 10),
         child: SafeArea(
           top: false,
@@ -365,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Container(
       width: double.infinity,
-      color: AppColors.navy,
+      color: Color(0xFF1E1A4D),
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       child: SafeArea(
         top: false,
@@ -423,7 +425,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.navyLight,
+        color: Color(0xFF2A2560),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
