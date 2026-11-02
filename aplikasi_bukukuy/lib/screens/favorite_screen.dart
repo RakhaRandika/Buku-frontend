@@ -19,9 +19,6 @@ class FavoriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.orientationOf(context) == Orientation.landscape;
-
     return Scaffold(
       backgroundColor: Color(0xFFFAF8F3),
       body: SafeArea(
@@ -37,7 +34,8 @@ class FavoriteScreen extends StatelessWidget {
                 top: false,
                 bottom: false,
                 child: Padding(
-                  padding: isLandscape
+                  padding:
+                      MediaQuery.orientationOf(context) == Orientation.landscape
                       ? const EdgeInsets.fromLTRB(12, 8, 24, 12)
                       : const EdgeInsets.fromLTRB(12, 16, 24, 32),
                   child: Column(

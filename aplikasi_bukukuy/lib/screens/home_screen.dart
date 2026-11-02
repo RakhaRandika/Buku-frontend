@@ -248,7 +248,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: _isLandscape ? 52 : 64,
+          height: MediaQuery.orientationOf(context) == Orientation.landscape
+              ? 52
+              : 64,
           child: Row(
             children: [
               _buildNavItem(
@@ -288,7 +290,11 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Spacer(),
             Icon(isActive ? activeIcon : icon, size: 24, color: color),
-            SizedBox(height: _isLandscape ? 2 : 4),
+            SizedBox(
+              height: MediaQuery.orientationOf(context) == Orientation.landscape
+                  ? 2
+                  : 4,
+            ),
             Text(
               label,
               style: TextStyle(
@@ -335,9 +341,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  bool get _isLandscape =>
-      MediaQuery.orientationOf(context) == Orientation.landscape;
-
   Widget _buildHeader() {
     final logoutButton = IconButton(
       tooltip: 'Keluar',
@@ -345,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: const Icon(Icons.logout, color: Color(0xFFC7D2FE)),
     );
 
-    if (_isLandscape) {
+    if (MediaQuery.orientationOf(context) == Orientation.landscape) {
       return Container(
         width: double.infinity,
         color: Color(0xFF1E1A4D),

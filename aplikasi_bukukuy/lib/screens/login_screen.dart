@@ -59,10 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.orientationOf(context) == Orientation.landscape;
-
-    if (isLandscape) {
+    if (MediaQuery.orientationOf(context) == Orientation.landscape) {
       return Scaffold(
         backgroundColor: Color(0xFFFAF8F3),
         body: SafeArea(
