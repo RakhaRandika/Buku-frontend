@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/book.dart';
 import '../widgets/book_cover.dart';
 
+import 'package:get/get.dart';
+
 class BookDetailScreen extends StatefulWidget {
   final Book book;
   final bool isFavorite;
@@ -162,7 +164,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       children: [
         IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Get.back(),
         ),
         const Spacer(),
         IconButton(

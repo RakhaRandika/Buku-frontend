@@ -28,8 +28,10 @@ class BookCover extends StatelessWidget {
             : Image.network(
                 url,
                 fit: BoxFit.cover,
-                loadingBuilder: (context, child, progress) =>
-                    progress == null ? child : _buildPlaceholder(),
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) =>
+                    wasSynchronouslyLoaded || frame != null
+                    ? child
+                    : _buildLoading(),
                 errorBuilder: (context, error, stackTrace) =>
                     _buildPlaceholder(),
               ),
@@ -38,22 +40,35 @@ class BookCover extends StatelessWidget {
   }
 
   Widget _buildPlaceholder() {
+    return _buildCentered(
+      Icon(
+        Icons.menu_book_rounded,
+        size: width * 0.35,
+        color: const Color(0xFFA5B4FC),
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return _buildCentered(
+      SizedBox(
+        width: width * 0.25,
+        height: width * 0.25,
+        child: const CircularProgressIndicator(
+          strokeWidth: 2,
+          color: Color(0xFFA5B4FC),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCentered(Widget child) {
     return Container(
-      color: Color(0xFF2A2560),
+      color: const Color(0xFF2A2560),
       child: Column(
         children: [
           const Spacer(),
-          Row(
-            children: [
-              const Spacer(),
-              Icon(
-                Icons.menu_book_rounded,
-                size: width * 0.35,
-                color: const Color(0xFFA5B4FC),
-              ),
-              const Spacer(),
-            ],
-          ),
+          Row(children: [const Spacer(), child, const Spacer()]),
           const Spacer(),
         ],
       ),

@@ -2,13 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../enums/load_state.dart';
 import '../models/book.dart';
 import '../service/api_service.dart';
 import '../service/auth_service.dart';
+import '../widgets/app_button_nav.dart';
 import '../widgets/book_card.dart';
 import 'book_detail_screen.dart';
 import 'favorite_screen.dart';
-import 'login_screen.dart';
+
+import 'package:get/get.dart';
+
+import '../routes/app_routes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Book> _books = [];
   List<Book> _favorites = [];
-  bool _loading = true;
+  LoadState _state = LoadState.loading;
   String _search = '';
   Timer? _debounce;
 
@@ -46,12 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadBooks() async {
     final search = _search;
-    setState(() => _loading = true);
+    setState(() => _state = LoadState.loading);
     final books = await ApiService.getBooks(search: search);
     if (!mounted || search != _search) return;
     setState(() {
       _books = books;
-      _loading = false;
+      _state = books.isEmpty ? LoadState.empty : LoadState.success;
     });
   }
 
@@ -90,17 +95,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openDetail(Book book) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => BookDetailScreen(
-          book: book,
-          isFavorite: _isFavorite(book),
-          onToggleFavorite: _toggleFavorite,
-        ),
+    Get.to(
+      () => BookDetailScreen(
+        book: book,
+        isFavorite: _isFavorite(book),
+        onToggleFavorite: _toggleFavorite,
       ),
     );
   }
 
+  // Spacer – Widget – Spacer (vertikal dengan Column, horizontal dengan Row):
+  // isi berada di tengah layar. Tetap bisa di-scroll kalau layarnya pendek.
   Widget _buildCentered(Widget child) {
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
@@ -132,13 +137,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBookList() {
-    if (_loading) {
-      return _buildCentered(
-        const CircularProgressIndicator(color: Color(0xFF1E1A4D)),
-      );
-    }
-    if (_books.isEmpty) {
-      return _buildCentered(const Text('Buku tidak ditemukan'));
+    switch (_state) {
+      case LoadState.initial:
+      case LoadState.loading:
+        return _buildCentered(
+          const CircularProgressIndicator(color: Color(0xFF1E1A4D)),
+        );
+      case LoadState.empty:
+        return _buildCentered(const Text('Buku tidak ditemukan'));
+      case LoadState.error:
+        return _buildCentered(const Text('Gagal memuat buku'));
+      case LoadState.success:
+        break;
     }
 
     return LayoutBuilder(
@@ -211,7 +221,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: _buildBottomNavbar(),
+        bottomNavigationBar: AppButtonNav(
+          currentIndex: _currentIndex,
+          onTap: _goTo,
+        ),
       ),
     );
   }
@@ -235,77 +248,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNavbar() {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE5E5E5), width: 1)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: MediaQuery.orientationOf(context) == Orientation.landscape
-              ? 52
-              : 64,
-          child: Row(
-            children: [
-              _buildNavItem(
-                icon: Icons.home_outlined,
-                activeIcon: Icons.home,
-                label: 'Beranda',
-                isActive: _currentIndex == 0,
-                onTap: () => _goTo(0),
-              ),
-              _buildNavItem(
-                icon: Icons.favorite_border,
-                activeIcon: Icons.favorite,
-                label: 'Favorit',
-                isActive: _currentIndex == 1,
-                onTap: () => _goTo(1),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem({
-    required IconData icon,
-    required IconData activeIcon,
-    required String label,
-    required bool isActive,
-    required VoidCallback onTap,
-  }) {
-    final color = isActive ? Color(0xFF1E1A4D) : const Color(0xFF9E9E9E);
-
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          children: [
-            const Spacer(),
-            Icon(isActive ? activeIcon : icon, size: 24, color: color),
-            SizedBox(
-              height: MediaQuery.orientationOf(context) == Orientation.landscape
-                  ? 2
-                  : 4,
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-                color: color,
-              ),
-            ),
-            const Spacer(),
-          ],
-        ),
       ),
     );
   }
@@ -335,10 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await AuthService.logout();
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-      (_) => false,
-    );
+    Get.offAllNamed(AppRoutes.login);
   }
 
   Widget _buildHeader() {

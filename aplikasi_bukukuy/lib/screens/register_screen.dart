@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../service/api_service.dart';
 import '../service/auth_service.dart';
 import '../widgets/auth_field.dart';
-import 'home_screen.dart';
+
+import 'package:get/get.dart';
+
+import '../routes/app_routes.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -52,10 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await AuthService.register(nama, email, password);
       if (!mounted) return;
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-        (_) => false,
-      );
+      Get.offAllNamed(AppRoutes.home);
     } on ApiException catch (e) {
       _showError(e.message);
     } finally {
@@ -167,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Get.back(),
             ),
             const Spacer(),
             Container(
@@ -311,9 +311,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: ElevatedButton(
                 onPressed: _loading ? null : _register,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1E1A4D),
+                  backgroundColor: const Color(0xFF1E1A4D),
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: Color(0xFF1E1A4D)
+                  disabledBackgroundColor: const Color(0xFF1E1A4D)
                       .withValues(alpha: 0.6),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -350,7 +350,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
             ),
             TextButton(
-              onPressed: _loading ? null : () => Navigator.of(context).pop(),
+              onPressed: _loading ? null : () => Get.back(),
               child: const Text(
                 'Masuk',
                 style: TextStyle(

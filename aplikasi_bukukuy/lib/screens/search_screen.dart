@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../enums/load_state.dart';
 import '../models/book.dart';
 import '../service/api_service.dart';
 import '../widgets/book_card.dart';
 import 'book_detail_screen.dart';
+
+import 'package:get/get.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -20,8 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   List<Book> _results = [];
   List<Book> _favorites = [];
-  bool _loading = false;
-  bool _hasSearched = false;
+  LoadState _state = LoadState.initial;
 
   @override
   void initState() {
@@ -52,17 +54,16 @@ class _SearchScreenState extends State<SearchScreen> {
     if (q.isEmpty) {
       setState(() {
         _results = [];
-        _hasSearched = false;
+        _state = LoadState.initial;
       });
       return;
     }
-    setState(() => _loading = true);
+    setState(() => _state = LoadState.loading);
     final results = await ApiService.getBooks(search: q);
     if (!mounted) return;
     setState(() {
       _results = results;
-      _loading = false;
-      _hasSearched = true;
+      _state = results.isEmpty ? LoadState.empty : LoadState.success;
     });
   }
 
@@ -84,16 +85,14 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _openDetail(Book book) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => BookDetailScreen(
-          book: book,
-          isFavorite: _isFavorite(book),
-          onToggleFavorite: (b) async {
-            await _toggleFavorite(b);
-            return true;
-          },
-        ),
+    Get.to(
+      () => BookDetailScreen(
+        book: book,
+        isFavorite: _isFavorite(book),
+        onToggleFavorite: (b) async {
+          await _toggleFavorite(b);
+          return true;
+        },
       ),
     );
   }
@@ -133,7 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Get.back(),
             ),
             Expanded(
               child: Container(
@@ -184,6 +183,8 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  // Spacer – Widget – Spacer (vertikal dengan Column, horizontal dengan Row):
+  // isi berada di tengah layar. Tetap bisa di-scroll kalau layarnya pendek.
   Widget _buildCentered(Widget child) {
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
@@ -215,36 +216,37 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildBody() {
-    if (_loading) {
-      return _buildCentered(
-        const CircularProgressIndicator(color: Color(0xFF1E1A4D)),
-      );
-    }
-
-    if (!_hasSearched) {
-      return _buildCentered(
-        Column(
-          children: [
-            const Row(
-              children: [
-                Spacer(),
-                Icon(Icons.search, size: 64, color: Color(0xFFD1D5DB)),
-                Spacer(),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Ketik judul buku atau nama penulis',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[600], fontSize: 14),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_results.isEmpty) {
-      return _buildCentered(const Text('Buku tidak ditemukan'));
+    switch (_state) {
+      case LoadState.initial:
+        return _buildCentered(
+          Column(
+            children: [
+              const Row(
+                children: [
+                  Spacer(),
+                  Icon(Icons.search, size: 64, color: Color(0xFFD1D5DB)),
+                  Spacer(),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Ketik judul buku atau nama penulis',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              ),
+            ],
+          ),
+        );
+      case LoadState.loading:
+        return _buildCentered(
+          const CircularProgressIndicator(color: Color(0xFF1E1A4D)),
+        );
+      case LoadState.empty:
+        return _buildCentered(const Text('Buku tidak ditemukan'));
+      case LoadState.error:
+        return _buildCentered(const Text('Gagal memuat buku'));
+      case LoadState.success:
+        break;
     }
 
     return LayoutBuilder(

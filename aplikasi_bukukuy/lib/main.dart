@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
+import 'package:get/get.dart';
+
+import 'routes/app_pages.dart';
 import 'service/auth_service.dart';
 
 Future<void> main() async {
@@ -15,14 +16,15 @@ class BukukuyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Bukukuy',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xFFFAF8F3),
         useMaterial3: true,
       ),
-      home: AuthService.isLoggedIn ? const HomeScreen() : const LoginScreen(),
+      initialRoute: AppPages.initial,
+      getPages: AppPages.routes,
     );
   }
 }
